@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { v4 as uuidv4 } from 'uuid';
 import { createUseStyles } from 'react-jss';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import * as actions from '../../redux/contacts/contacts-actions';
 
 const useStyles = createUseStyles({
   form: {
@@ -21,7 +23,7 @@ const initialValue = {
   number: '',
 };
 
-const ContactForm = ({ onSubmit, onCheckNames }) => {
+const ContactForm = ({ contacts, onSubmit }) => {
   const [state, setState] = useState(initialValue);
   const { name, number } = state;
   const classes = useStyles();
@@ -36,18 +38,23 @@ const ContactForm = ({ onSubmit, onCheckNames }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    const newContant = {
-      id: uuidv4(),
-      name,
-      number,
-    };
-
-    if (onCheckNames(newContant.name)) {
-      return;
+    if (!checkPossibleRepeat(name)) {
+      onSubmit({
+        name,
+        number,
+      });
     }
 
-    onSubmit(newContant);
     setState(initialValue);
+  };
+
+  const checkPossibleRepeat = newName => {
+    const isNameExist = !!contacts.find(contact => contact.name === newName);
+
+    if (isNameExist) {
+      alert(`${newName} is already in contacts.`);
+    }
+    return isNameExist;
   };
 
   return (
@@ -83,9 +90,17 @@ const ContactForm = ({ onSubmit, onCheckNames }) => {
   );
 };
 
+const mapStateToProps = state => ({
+  contacts: state.items,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: contact => dispatch(actions.addNewContact(contact)),
+});
+
 ContactForm.propTypes = {
+  contacts: PropTypes.array,
   onSubmit: PropTypes.func,
-  onCheckNames: PropTypes.func,
 };
 
-export default ContactForm;
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

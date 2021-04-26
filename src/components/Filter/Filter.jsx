@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
+import { setFilter } from '../../redux/filter/filter-actions';
+
 const useStyles = createUseStyles({
   filter: {
     display: 'flex',
@@ -18,8 +21,9 @@ const Filter = ({ onFilterChange }) => {
 
   const handleFilterChange = e => {
     const value = e.target.value;
-    setState(value);
+
     onFilterChange(value);
+    setState(value);
   };
 
   return (
@@ -32,8 +36,16 @@ const Filter = ({ onFilterChange }) => {
   );
 };
 
+const mapStateToProps = state => ({
+  filter: state.filter,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onFilterChange: filter => dispatch(setFilter(filter)),
+});
+
 Filter.propTypes = {
   onFilterChange: PropTypes.func,
 };
 
-export default Filter;
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);
