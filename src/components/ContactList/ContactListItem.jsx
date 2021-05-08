@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import { createUseStyles } from 'react-jss';
 
-import { connect } from 'react-redux';
-import * as actions from '../../redux/contacts/contacts-actions';
-
 const useStyles = createUseStyles({
   contact: {
     display: 'flex',
@@ -31,18 +28,10 @@ const ContactListItem = ({ id, name, number, onDelete }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  contacts: state.items,
-});
-
-const mapDispatchToProps = dispatch => ({
-  onDelete: id => dispatch(actions.deleteContact(id)),
-});
-
 ContactListItem.propTypes = {
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
   onDelete: PropTypes.func,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactListItem);
+export default ContactListItem;

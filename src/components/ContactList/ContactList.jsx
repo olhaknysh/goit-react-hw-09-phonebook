@@ -1,38 +1,25 @@
-import { connect } from 'react-redux';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import ContactListItem from './ContactListItem';
+import ContactListItem from './ContactListItem.container';
 
-const ContactList = ({ contacts, filter }) => {
-  const visibleContacts = () => {
-    if (filter) {
-      const normalisedFilter = filter.toLowerCase();
-      const filteredContacts = contacts.filter(({ name }) =>
-        name.toLowerCase().includes(normalisedFilter),
-      );
-      return filteredContacts;
-    }
-
-    return contacts;
-  };
+const ContactList = ({ contacts, fetchContacts }) => {
+  useEffect(() => {
+    fetchContacts();
+  }, []);
 
   return (
     <ul>
-      {visibleContacts().map(({ id, name, number }) => (
+      {contacts.map(({ id, name, number }) => (
         <ContactListItem key={id} id={id} name={name} number={number} />
       ))}
     </ul>
   );
 };
 
-const mapStateToProps = state => ({
-  contacts: state.items,
-  filter: state.filter,
-});
-
 ContactList.propTypes = {
   contacts: PropTypes.array,
-  filter: PropTypes.string,
+  fetchContacts: PropTypes.func,
 };
 
-export default connect(mapStateToProps)(ContactList);
+export default ContactList;
