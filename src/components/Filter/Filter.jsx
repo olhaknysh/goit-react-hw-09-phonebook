@@ -9,6 +9,7 @@ const useStyles = createUseStyles({
   filter: {
     display: 'flex',
     flexDirection: 'column',
+    width: '50%',
   },
   label: {
     marginBottom: 10,

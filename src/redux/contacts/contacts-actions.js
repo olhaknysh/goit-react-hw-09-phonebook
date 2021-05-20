@@ -24,3 +24,13 @@ export const deleteContactsSuccess = createAction(
 export const deleteContactsFailure = createAction(
   'contacts/deleteContactsFailure',
 );
+
+export const patchContactsRequest = createAction(
+  'contacts/patchContactsRequest',
+);
+export const patchContactsSuccess = createAction(
+  'contacts/patchContactsSuccess',
+);
+export const patchContactsFailure = createAction(
+  'contacts/patchContactsFailure',
+);
