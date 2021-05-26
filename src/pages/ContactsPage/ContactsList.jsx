@@ -1,7 +1,6 @@
-import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ContactListItem from './ContactListItem';
 
@@ -23,12 +22,15 @@ const useStyles = createUseStyles({
   },
 });
 
-const ContactsList = ({ contacts, getContacts }) => {
+const ContactsList = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const contacts = useSelector(contactsSelectors.getVisibleContacts);
 
   useEffect(() => {
-    getContacts();
-  }, []);
+    dispatch(contactOperations.fetchContacts());
+  }, [dispatch]);
 
   return (
     <ul className={classes.list}>
@@ -39,17 +41,4 @@ const ContactsList = ({ contacts, getContacts }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  contacts: contactsSelectors.getVisibleContacts(state),
-});
-
-const mapDispatchToProps = {
-  getContacts: contactOperations.fetchContacts,
-};
-
-ContactsList.propTypes = {
-  contacts: PropTypes.array,
-  getContacts: PropTypes.func,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsList);
+export default ContactsList;

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -45,9 +44,13 @@ const initialValue = {
   password: '',
 };
 
-const RegisterPage = ({ isLoading, error, onRegister }) => {
+const RegisterPage = () => {
   const [state, setState] = useState(initialValue);
   const { name, email, password } = state;
+
+  const dispatch = useDispatch();
+  const loading = useSelector(isLoading);
+  const errorPresence = useSelector(error);
 
   const classes = useStyles();
 
@@ -61,7 +64,7 @@ const RegisterPage = ({ isLoading, error, onRegister }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    onRegister(state);
+    dispatch(register(state));
 
     setState(initialValue);
   };
@@ -124,25 +127,10 @@ const RegisterPage = ({ isLoading, error, onRegister }) => {
         </Button>
       </form>
 
-      {error && <ToastContainer />}
-      {isLoading && <CircularProgress />}
+      {errorPresence && <ToastContainer />}
+      {loading && <CircularProgress />}
     </div>
   );
 };
 
-const mapStateToProps = state => ({
-  isLoading: isLoading(state),
-  error: error(state),
-});
-
-const mapDispatchToProps = {
-  onRegister: register,
-};
-
-RegisterPage.propTypes = {
-  isLoading: PropTypes.bool,
-  error: PropTypes.string,
-  onRegister: PropTypes.func,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);
+export default RegisterPage;

@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { createUseStyles } from 'react-jss';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import AuthNav from './AuthNav';
 import UserMenu from './UserMenu';
@@ -18,8 +17,9 @@ const useStyles = createUseStyles({
   },
 });
 
-const Navigation = ({ isAuthenticated }) => {
+const Navigation = () => {
   const classes = useStyles();
+  const isAuthenticated = useSelector(getIsAuthenticated);
 
   return (
     <div className={classes.nav}>
@@ -32,12 +32,4 @@ const Navigation = ({ isAuthenticated }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  isAuthenticated: getIsAuthenticated(state),
-});
-
-Navigation.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
-};
-
-export default connect(mapStateToProps)(Navigation);
+export default Navigation;

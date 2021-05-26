@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import AppBar from './components/AppBar';
 import Container from '@material-ui/core/Container';
@@ -27,10 +27,12 @@ const RegisterPage = lazy(() =>
   import('./pages/RegisterPage' /* webpackChunkName: "RegisterPage */),
 );
 
-const App = ({ getCurrentUser }) => {
+const App = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getCurrentUser();
-  }, []);
+    dispatch(getCurrentUser());
+  }, [dispatch]);
 
   return (
     <Container>
@@ -43,27 +45,23 @@ const App = ({ getCurrentUser }) => {
             restricted
             path={routes.register}
             redirectTo={routes.contacts}
-            component={RegisterPage}
-          />
+          >
+            <RegisterPage />
+          </PublicRoute>
           <PublicRoute
             restricted
             redirectTo={routes.contacts}
             path={routes.login}
-            component={LoginPage}
-          />
-          <PrivateRoute
-            redirectTo={routes.login}
-            path={routes.contacts}
-            component={ContactsPage}
-          />
+          >
+            <LoginPage />
+          </PublicRoute>
+          <PrivateRoute redirectTo={routes.login} path={routes.contacts}>
+            <ContactsPage />
+          </PrivateRoute>
         </Switch>
       </Suspense>
     </Container>
   );
 };
 
-const mapDispatchToProps = {
-  getCurrentUser: getCurrentUser,
-};
-
-export default connect(null, mapDispatchToProps)(App);
+export default App;

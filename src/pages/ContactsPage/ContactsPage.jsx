@@ -1,13 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import AddContact from './AddContact.container';
+import AddContact from './AddContact';
 import ContactsList from './ContactsList';
 import Filter from '../../components/Filter';
 
@@ -54,13 +53,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ContactsPage = ({
-  authError,
-  authLoading,
-  contactsError,
-  contactsIsLoading,
-}) => {
+const ContactsPage = () => {
   const classes = useStyles();
+
+  const authError = useSelector(error);
+  const authLoading = useSelector(isLoading);
+  const contactsError = useSelector(contactsSelectors.getError);
+  const contactsIsLoading = useSelector(contactsSelectors.getIsLoading);
 
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
@@ -101,18 +100,4 @@ const ContactsPage = ({
   );
 };
 
-const mapStateToProps = state => ({
-  authError: error(state),
-  authLoading: isLoading(state),
-  contactsError: contactsSelectors.getError(state),
-  contactsIsLoading: contactsSelectors.getIsLoading(state),
-});
-
-ContactsPage.propTypes = {
-  authError: PropTypes.string,
-  contactsError: PropTypes.string,
-  authLoading: PropTypes.bool,
-  contactsIsLoading: PropTypes.bool,
-};
-
-export default connect(mapStateToProps)(ContactsPage);
+export default ContactsPage;

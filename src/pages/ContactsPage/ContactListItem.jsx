@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
 import { createUseStyles } from 'react-jss';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
@@ -34,10 +34,12 @@ const useStyles = createUseStyles({
   },
 });
 
-const ContactListItem = ({ name, number, id, deleteContact, patchContact }) => {
+const ContactListItem = ({ name, number, id }) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [open, setOpen] = React.useState(false);
+
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
@@ -49,8 +51,12 @@ const ContactListItem = ({ name, number, id, deleteContact, patchContact }) => {
       name: newName,
       number: newNumber,
     };
-    patchContact(newContact, id);
+    dispatch(contactOperations.patchContact(newContact, id));
     handleClose();
+  };
+
+  const handleDeleteContact = () => {
+    dispatch(contactOperations.deleteContact(id));
   };
 
   const handleOpen = () => {
@@ -65,7 +71,7 @@ const ContactListItem = ({ name, number, id, deleteContact, patchContact }) => {
       <p>{name}</p>
       <p>{number}</p>
 
-      <Button type="button" onClick={() => deleteContact(id)}>
+      <Button type="button" onClick={handleDeleteContact}>
         Delete
       </Button>
       <Button type="button" onClick={handleOpen}>
@@ -98,17 +104,10 @@ const ContactListItem = ({ name, number, id, deleteContact, patchContact }) => {
   );
 };
 
-const mapDispatchToProps = {
-  deleteContact: contactOperations.deleteContact,
-  patchContact: contactOperations.patchContact,
-};
-
 ContactListItem.propTypes = {
   name: PropTypes.string,
   number: PropTypes.string,
   id: PropTypes.string,
-  deleteContact: PropTypes.func,
-  patchContact: PropTypes.func,
 };
 
-export default connect(null, mapDispatchToProps)(ContactListItem);
+export default ContactListItem;

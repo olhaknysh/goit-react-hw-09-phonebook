@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -44,9 +43,13 @@ const initialValue = {
   password: '',
 };
 
-const LoginPage = ({ isLoading, error, onLogin }) => {
+const LoginPage = () => {
   const [state, setState] = useState(initialValue);
   const { email, password } = state;
+
+  const dispatch = useDispatch();
+  const loading = useSelector(isLoading);
+  const errorPresence = useSelector(error);
 
   const classes = useStyles();
 
@@ -60,7 +63,7 @@ const LoginPage = ({ isLoading, error, onLogin }) => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    onLogin(state);
+    dispatch(login(state));
 
     setState(initialValue);
   };
@@ -111,25 +114,10 @@ const LoginPage = ({ isLoading, error, onLogin }) => {
         </Button>
       </form>
 
-      {error && <ToastContainer />}
-      {isLoading && <CircularProgress />}
+      {loading && <ToastContainer />}
+      {errorPresence && <CircularProgress />}
     </div>
   );
 };
 
-const mapStateToProps = state => ({
-  isLoading: isLoading(state),
-  error: error(state),
-});
-
-const mapDispatchToProps = {
-  onLogin: login,
-};
-
-LoginPage.propTypes = {
-  isLoading: PropTypes.bool,
-  error: PropTypes.string,
-  onLogin: PropTypes.func,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default LoginPage;

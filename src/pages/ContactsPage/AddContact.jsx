@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import contactOperations from '../../redux/contacts/contacts-operations';
+import contactSelectors from '../../redux/contacts/contacts-selectors';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -33,9 +37,11 @@ const initialValue = {
   number: '',
 };
 
-const AddContact = ({ contacts, onSubmit, onClose }) => {
+const AddContact = ({ onClose }) => {
+  const dispatch = useDispatch();
   const [state, setState] = useState(initialValue);
   const { name, number } = state;
+  const contacts = useSelector(contactSelectors.getContacts);
 
   const classes = useStyles();
 
@@ -50,10 +56,7 @@ const AddContact = ({ contacts, onSubmit, onClose }) => {
     e.preventDefault();
 
     if (!checkPossibleRepeat(name)) {
-      onSubmit({
-        name,
-        number,
-      });
+      dispatch(contactOperations.addContact({ name, number }));
     }
 
     onClose();
@@ -112,8 +115,6 @@ const AddContact = ({ contacts, onSubmit, onClose }) => {
 };
 
 AddContact.propTypes = {
-  contacts: PropTypes.array,
-  onSubmit: PropTypes.func,
   onClose: PropTypes.func,
 };
 

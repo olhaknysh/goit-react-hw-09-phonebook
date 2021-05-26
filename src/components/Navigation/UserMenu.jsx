@@ -1,6 +1,5 @@
-import { connect } from 'react-redux';
 import { createUseStyles } from 'react-jss';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 
@@ -20,11 +19,15 @@ const useStyles = createUseStyles({
   },
 });
 
-const UserMenu = ({ name, email, onLogout }) => {
+const UserMenu = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const name = useSelector(getUsername);
+  const email = useSelector(getUserEmail);
 
   const handleLogout = () => {
-    onLogout();
+    dispatch(logout());
   };
 
   return (
@@ -38,19 +41,4 @@ const UserMenu = ({ name, email, onLogout }) => {
   );
 };
 
-const mapStateToProps = state => ({
-  name: getUsername(state),
-  email: getUserEmail(state),
-});
-
-const mapDisptachToProps = {
-  onLogout: logout,
-};
-
-UserMenu.propTypes = {
-  name: PropTypes.string,
-  email: PropTypes.string,
-  onLogout: PropTypes.func,
-};
-
-export default connect(mapStateToProps, mapDisptachToProps)(UserMenu);
+export default UserMenu;
